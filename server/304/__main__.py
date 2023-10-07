@@ -1,12 +1,16 @@
+"""
+main
+"""
+
 import argparse
 import logging
 import logging.config
 import time
 
-from .app import App
-
 from argparse import ArgumentParser
 from logging.handlers import TimedRotatingFileHandler
+
+from .app import App
 
 
 def _add_arguments(parser: ArgumentParser):
@@ -18,11 +22,8 @@ def _add_arguments(parser: ArgumentParser):
     parser.add_argument("--log-file", default="game.log")
 
 
-LOG_FORMAT = "%(asctime)s {0} - %(levelname)s - %(name)s - %(message)s".format(
-    time.localtime().tm_zone
-)
+LOG_FORMAT = f"%(asctime)s {time.localtime().tm_zone} - %(levelname)s - %(name)s - %(message)s"
 
-log_config = None
 
 
 def _configure_logger(log_level: str, log_file: str):
@@ -52,6 +53,9 @@ def _configure_logger(log_level: str, log_file: str):
 
 
 def main():
+    """
+    main
+    """
     parser = argparse.ArgumentParser()
     _add_arguments(parser=parser)
     args = parser.parse_args()

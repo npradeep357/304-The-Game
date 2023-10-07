@@ -1,0 +1,19 @@
+FROM python:3.11.3-slim-buster
+
+# RUN yum update
+RUN apt update
+
+WORKDIR /app
+
+# copy requirements file and install dependencies
+COPY *.egg-info/requires.txt /app/requirements.txt
+RUN python3 -m pip install -r /app/requirements.txt
+
+# copy whl file and install with no deps
+COPY ./dist/304-*.whl /app/
+RUN python3 -m pip install --no-deps /app/304*.whl
+
+EXPOSE 3040
+
+
+CMD ["python3", "-m" , "304", "--version", "1.0.0"]
