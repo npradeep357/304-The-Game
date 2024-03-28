@@ -1,19 +1,17 @@
-FROM python:3.11.3-slim-buster
-
-# RUN yum update
-RUN apt update
+FROM python:3.12.2-slim-bullseye
+RUN python3.12 -m pip install --upgrade pip
+ENV PYTHONPATH="/app"
 
 WORKDIR /app
 
 # copy requirements file and install dependencies
-COPY *.egg-info/requires.txt /app/requirements.txt
-RUN python3 -m pip install -r /app/requirements.txt
+COPY ./server/requirements.txt /app/requirements.txt
+RUN python3.12 -m pip install -r /app/requirements.txt
+RUN rm -f /app/requirements.txt
 
-# copy whl file and install with no deps
-COPY ./dist/304-*.whl /app/
-RUN python3 -m pip install --no-deps /app/304*.whl
+# copy files
+COPY ./server/304/ /app/
 
-EXPOSE 3040
+EXPOSE 80
 
-
-CMD ["python3", "-m" , "304", "--version", "1.0.0"]
+CMD ["python3.12", "/app/__main__.py", "--version", "1.0.0"]

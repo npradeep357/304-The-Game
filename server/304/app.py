@@ -10,8 +10,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from .store import SESSIONS
-from .game import Game
+from store import SESSIONS
+from game import Game
 
 
 log = logging.getLogger(__name__)

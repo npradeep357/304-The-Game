@@ -10,20 +10,21 @@ import time
 from argparse import ArgumentParser
 from logging.handlers import TimedRotatingFileHandler
 
-from .app import App
+from app import App
 
 
 def _add_arguments(parser: ArgumentParser):
     parser.description = "304-The-Game"
     parser.add_argument("--host", default="127.0.0.1", help="Bind to this address")
-    parser.add_argument("--port", type=int, default=3040, help="Bind to this port")
+    parser.add_argument("--port", type=int, default=80, help="Bind to this port")
     parser.add_argument("--version", default="SNAPSHOT", help="Version of the project")
     parser.add_argument("--log-level", default="info", help="Log Level")
     parser.add_argument("--log-file", default="game.log")
 
 
-LOG_FORMAT = f"%(asctime)s {time.localtime().tm_zone} - %(levelname)s - %(name)s - %(message)s"
-
+LOG_FORMAT = (
+    f"%(asctime)s {time.localtime().tm_zone} - %(levelname)s - %(name)s - %(message)s"
+)
 
 
 def _configure_logger(log_level: str, log_file: str):
