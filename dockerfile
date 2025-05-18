@@ -8,7 +8,7 @@ COPY ./client/. /app/client
 WORKDIR /app/client
 RUN npm install && npm run build
 
-FROM python:3.13-slim-bullseye as python_builder
+FROM python:3.13-slim-bullseye AS python_builder
 
 WORKDIR /app
 COPY ./server/requirements.txt /app/requirements.txt

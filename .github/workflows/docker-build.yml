@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Docker Build and Push
 
 on:
   push:
@@ -12,10 +12,24 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Build Docker image
-      run: docker build -t 304-game:latest .
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./dockerfile
+        push: true
+        tags: npradeep357/304-game:${{ github.sha }}
 
     - name: Print success message
-      run: echo "Docker image built successfully!"
+      run: echo "Docker image built and pushed successfully!"
