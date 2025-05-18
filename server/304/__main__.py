@@ -9,6 +9,8 @@ import time
 
 from argparse import ArgumentParser
 from logging.handlers import TimedRotatingFileHandler
+from uvicorn import Config, Server
+
 
 from app import App
 
@@ -63,7 +65,18 @@ def main():
     _configure_logger(args.log_level, args.log_file)
 
     # runs indefinitively untill stopped.
-    App(args.host, args.port, args.version, args.log_level)
+    fast_app = App(args.host, args.port, args.version, args.log_level)
+
+    app_config = Config(
+        app=fast_app,
+        host=config.get("host", "0.0.0.0"),
+        port=config.get("port", "9723"),
+        use_colors=True,
+        log_level="debug",
+    )
+
+    server = Server(app_config)
+    server.run()
 
 
 if __name__ == "__main__":
