@@ -1,0 +1,12 @@
+{
+  "name": "304-game-client",
+  "version": "1.0.0",
+  "description": "Client UI for the 304 card game.",
+  "main": "index.js",
+  "scripts": {
+    "build": "mkdir -p dist && cp index.html dist/ && cp script.js dist/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
