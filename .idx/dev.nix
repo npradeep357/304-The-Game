@@ -8,6 +8,7 @@
   packages = [
     # pkgs.go
     pkgs.python313Full
+    pkgs.python312Packages.pip
     # pkgs.python311
     # pkgs.python311Packages.pip
     # pkgs.nodejs_20

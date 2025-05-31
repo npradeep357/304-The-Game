@@ -13,6 +13,8 @@ from fastapi import Request
 from starlette.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 
+from .store import SESSIONS
+from .game import Game
 
 
 log = logging.getLogger(__name__)
@@ -64,13 +66,34 @@ def add_routes(fast_app):
     @fast_app.websocket("/ws/{session_id}")
     async def websocket_endpoint(websocket: WebSocket, session_id: str):
         await websocket.accept()
+        game = SESSIONS.get(session_id)
+        if game is None:
+            await websocket.send_text("Invalid session ID")
+            await websocket.close()
+            return
+
+        if len(game.players) >= 4:
+            await websocket.send_text("Game session is full")
+            await websocket.close()
+            return
+
+        game.players.append(websocket)
         try:
-            while True:
+            if len(game.players) == 4:
+                game.state = "starting"
+                for player_websocket in game.players:
+                    await player_websocket.send_json({"type": "game_state", "state": "starting"})
+            while True:  # Keep the connection open for communication
                 data = await websocket.receive_text()
-                print(f"Received message: {data}")
-                await websocket.send_text(f"Message received: {data}")
-        except WebSocketDisconnect:
-            print("Client disconnected")
+                # Process incoming messages (game actions, chat, etc.)
+                print(f"Received message from session {session_id}: {data}")
+                # Example: echo message back (replace with game logic)
+                # await websocket.send_text(f"Message received in session {session_id}: {data}")
+        except WebSocketDisconnect as e:
+            print(f"Client disconnected from session {session_id} with code: {e.code}")
+        finally:
+            if websocket in game.players:
+                game.players.remove(websocket)
 
     @fast_app.get("/", response_class=HTMLResponse)
     async def read_root():
